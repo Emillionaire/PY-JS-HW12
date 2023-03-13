@@ -14,21 +14,25 @@ authFrom.addEventListener('submit', (event) => {
 
     const xhr = new XMLHttpRequest()
 
-    xhr.open('POST', 'https://students.netoservices.ru/nestjs-backend/auth', false)
+    xhr.open('POST', 'https://students.netoservices.ru/nestjs-backend/auth')
 
     const formData = new FormData(authFrom)
 
+    xhr.responseType = 'json'
+
     xhr.send(formData)
 
-    successStatus = JSON.parse(xhr.response)['success']
-    userId = JSON.parse(xhr.response)['user_id']
-    
-    if (successStatus) {
-        idUser.innerText = userId
-        welcomeWindow.classList.add('welcome_active')
-        signForm.classList.remove('signin_active')
-        localStorage.setItem('user', userId)
-    } else {
-        alert('Wrong login or password!')
-    }
+    xhr.addEventListener('load', (event) => {
+        successStatus = xhr.response['success']
+        userId = xhr.response['user_id']
+
+        if (successStatus) {
+            idUser.innerText = userId
+            welcomeWindow.classList.add('welcome_active')
+            signForm.classList.remove('signin_active')
+            localStorage.setItem('user', userId)
+        } else {
+            alert('Wrong login or password!')
+        }
+    })
 })
